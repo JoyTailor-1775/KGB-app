@@ -1,0 +1,118 @@
+@import '../../../globals/variables.scss';
+
+.button {
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  text-transform: uppercase;
+  font-weight: 900;
+  cursor: pointer;
+  padding: 5px 7px;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.small {
+  min-width: 30px;
+  height: 30px;
+  font-size: 14px;
+}
+
+.medium {
+  min-width: 35px;
+  height: 35px;
+  font-size: 16px;
+}
+
+.large {
+  min-width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.regular {
+  color: #ffffff;
+  background-color: $silver;
+  border: solid 1px $silver;
+  &:hover {
+    animation: regularHover 1.5s linear;
+  }
+}
+
+.primary {
+  color: #ffffff;
+  background-color: $blue;
+  border: solid 1px $blue;
+  &:hover {
+    animation: primaryHover 1.5s linear;
+  }
+}
+
+.error {
+  color: #ffffff;
+  background-color: $red;
+  border: solid 1px $red;
+  &:hover {
+    animation: errorHover 1.5s linear;
+  }
+}
+
+.action {
+  color: #ffffff;
+  background-color: $green;
+  border: solid 1px $green;
+  &:hover {
+    animation: actionHover 1.5s linear;
+  }
+}
+
+@keyframes primaryHover {
+  0%,
+  100% {
+    background-color: $blue;
+    color: #ffff;
+  }
+  50% {
+    background-color: #ffff;
+    color: $blue;
+  }
+}
+
+@keyframes errorHover {
+  0%,
+  100% {
+    background-color: $red;
+    color: #ffff;
+  }
+  50% {
+    background-color: #ffff;
+    color: $red;
+  }
+}
+
+@keyframes actionHover {
+  0%,
+  100% {
+    background-color: $green;
+    color: #ffff;
+  }
+  50% {
+    background-color: #ffff;
+    color: $green;
+  }
+}
+
+@keyframes regularHover {
+  0%,
+  100% {
+    background-color: $silver;
+    color: #ffff;
+  }
+  50% {
+    background-color: #ffff;
+    color: $silver;
+  }
+}

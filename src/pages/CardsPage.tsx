@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as api from '../api/families';
 
 export default class CardsPage extends Component {
   render() {
