@@ -43,6 +43,16 @@ import './Table.scss';
         pagination limitation work.
 */
 
+interface TableColumn {
+  heading: string;
+  dataKey: string;
+  width: String;
+  sortable: boolean;
+  sortFunc: () => any;
+}
+
+interface TableProps {}
+
 export default class Table extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +71,8 @@ export default class Table extends Component {
   }
 
   toggleSortOrder = (key) => {
-    const newColumnOrder = this.state.sortingManager[key] === 'asc' ? 'desc' : 'asc';
+    const newColumnOrder =
+      this.state.sortingManager[key] === 'asc' ? 'desc' : 'asc';
     this.setState({
       sortingManager: {
         ...this.state.sortingManager,
