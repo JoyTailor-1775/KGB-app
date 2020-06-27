@@ -24,8 +24,8 @@ import './Table.scss';
         columns prop.
     3) onRowClick() - a method, which is called, after click on a certain table row. 
         Returns the row id.
-    4) rowKey - any, it's a unique key for every table row, could be anything, since it's 
-        uniqueness is assurred.
+    4) rowKey - number | string, it's a unique key for every table row, could be any number or string
+        , since it's uniqueness is assurred.
 
   The Table also has optional parameters:
     1) loading: Boolean (default value = false). Determines wheter to show a loading
@@ -43,18 +43,34 @@ import './Table.scss';
         pagination limitation work.
 */
 
-interface TableColumn {
+interface ColumnSortingFunction<TableData> {
+  (arg: TableData[]): TableData[];
+}
+
+interface TableColumn<TableData> {
   heading: string;
   dataKey: string;
   width: String;
   sortable: boolean;
-  sortFunc: () => any;
+  sortFunc: ColumnSortingFunction<TableData>;
 }
 
-interface TableProps {}
+interface TableProps<TableData> {
+  columns: TableColumn<TableData>[];
+  data: TableData[];
+  onRowClick: () => string | number;
+  rowKey: string | number;
+  loading?: boolean;
+  deletable?: boolean;
+  onDelete?: () => string | number;
+  pagination?: boolean;
+  page?: number;
+  onPageChange?: () => number;
+  totalPages?: number;
+}
 
-export default class Table extends Component {
-  constructor(props) {
+export class Table<TableData> extends Component {
+  constructor(props: TableProps<TableData>) {
     super(props);
 
     // Preparing an object for managing sortable talbe columns.
