@@ -45,12 +45,12 @@ import './Table.scss';
 */
 
 export interface TableDataStructure {
-  [key: string] : string;
+  [key: string]: string;
 }
 
 interface ColumnSortingFunctionParams {
-  dataKey: string,
-  order: 'asc' | 'desc',
+  dataKey: string;
+  order: 'asc' | 'desc';
 }
 
 interface ColumnSortingFunction {
@@ -80,7 +80,7 @@ interface TableProps {
 }
 
 interface SortingObject {
-  [key: string] : 'asc' | 'desc';
+  [key: string]: 'asc' | 'desc';
 }
 
 interface TableState {
