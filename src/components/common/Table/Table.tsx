@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, MouseEvent } from 'react';
 import Button from '../Button';
+import ButtonColorTypes from '../Button';
 import Spinner from '../Spinner';
 import './Table.scss';
 /*
@@ -43,34 +44,51 @@ import './Table.scss';
         pagination limitation work.
 */
 
-interface ColumnSortingFunction<TableData> {
-  (arg: TableData[]): TableData[];
+export interface TableDataStructure {
+  [key: string] : string;
 }
 
-interface TableColumn<TableData> {
+interface ColumnSortingFunctionParams {
+  dataKey: string,
+  order: 'asc' | 'desc',
+}
+
+interface ColumnSortingFunction {
+  (obj: ColumnSortingFunctionParams): TableDataStructure;
+}
+
+interface TableColumn {
   heading: string;
   dataKey: string;
-  width: String;
+  width: string;
   sortable: boolean;
-  sortFunc: ColumnSortingFunction<TableData>;
+  sortFunc: ColumnSortingFunction;
 }
 
-interface TableProps<TableData> {
-  columns: TableColumn<TableData>[];
-  data: TableData[];
-  onRowClick: () => string | number;
+interface TableProps {
+  columns: TableColumn[];
+  data: TableDataStructure[];
+  onRowClick: (id: string | number) => void;
   rowKey: string | number;
   loading?: boolean;
   deletable?: boolean;
-  onDelete?: () => string | number;
+  onDelete?: (rowKey: string | number) => void;
   pagination?: boolean;
   page?: number;
-  onPageChange?: () => number;
+  onPageChange?: (direction: 'asc' | 'desc') => number;
   totalPages?: number;
 }
 
-export class Table<TableData> extends Component {
-  constructor(props: TableProps<TableData>) {
+interface SortingObject {
+  [key: string] : 'asc' | 'desc';
+}
+
+interface TableState {
+  sortingManager: SortingObject;
+}
+
+export class Table extends Component<TableProps, TableState> {
+  constructor(props: TableProps) {
     super(props);
 
     // Preparing an object for managing sortable talbe columns.
@@ -79,14 +97,14 @@ export class Table<TableData> extends Component {
       .map((el) => {
         return el.dataKey;
       });
-    const sortingObj = {};
+    const sortingObj: SortingObject = {};
     sortableColumns.forEach((el) => (sortingObj[el] = 'asc'));
     this.state = {
       sortingManager: sortingObj,
     };
   }
 
-  toggleSortOrder = (key) => {
+  toggleSortOrder = (key: string) => {
     const newColumnOrder =
       this.state.sortingManager[key] === 'asc' ? 'desc' : 'asc';
     this.setState({
@@ -97,7 +115,7 @@ export class Table<TableData> extends Component {
     });
   };
 
-  onSortColumn = (column) => {
+  onSortColumn = (column: TableColumn) => {
     this.toggleSortOrder(column.dataKey);
     column.sortFunc({
       dataKey: column.dataKey,
@@ -105,20 +123,19 @@ export class Table<TableData> extends Component {
     });
   };
 
-  onRowClickOwn = (e, id) => {
-    if (e.target.nodeName === 'BUTTON') return;
+  onRowClickOwn = (e: MouseEvent<HTMLTableRowElement>, id: string | number) => {
+    if (e.currentTarget.nodeName === 'BUTTON') return;
     this.props.onRowClick(id);
   };
 
-  onPageChangeOwn = (direction) => {
-    console.log(this.props.page, this.props.totalPages);
+  onPageChangeOwn = (direction: 'asc' | 'desc') => {
     if (this.props.page === 1 && direction === 'desc') {
       return;
     }
     if (this.props.page === this.props.totalPages && direction === 'asc') {
       return;
     }
-    this.props.onPageChange(direction);
+    this.props.onPageChange && this.props.onPageChange(direction);
   };
 
   render() {
@@ -177,8 +194,6 @@ export class Table<TableData> extends Component {
               return (
                 <tr
                   className="table__row"
-                  align="center"
-                  valign="center"
                   key={obj[rowKey]}
                   onClick={(e) => this.onRowClickOwn(e, obj[rowKey])}
                 >
@@ -197,7 +212,7 @@ export class Table<TableData> extends Component {
                     <td className="table__cell table__cell--delete">
                       <Button
                         text="X"
-                        color="error"
+                        color={ButtonColorTypes.ERROR}
                         onClick={() => onDelete(obj[rowKey])}
                       />
                     </td>

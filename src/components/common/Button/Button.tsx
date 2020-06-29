@@ -28,19 +28,19 @@ import './Button.scss';
     5) id: any - html id attribute.
 */
 
-enum ButtonActionTypes {
+export enum ButtonActionTypes {
   BUTTON = 'button',
   SUBMIT = 'submit',
 }
 
-enum ButtonColorTypes {
+export enum ButtonColorTypes {
   PRIMARY = 'primary',
   ERROR = 'error',
   ACTION = 'action',
   REGULAR = 'regular',
 }
 
-enum ButtonSizeTypes {
+export enum ButtonSizeTypes {
   SMALL = 'small',
   MEDIUM = 'medium',
   LARGE = 'large',
@@ -56,7 +56,7 @@ interface Button {
   id?: string;
 }
 
-const Button = ({
+export const Button = ({
   text,
   onClick,
   type = ButtonActionTypes.BUTTON,
@@ -79,5 +79,3 @@ const Button = ({
     </button>
   );
 };
-
-export default Button;
