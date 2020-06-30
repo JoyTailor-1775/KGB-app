@@ -12,7 +12,7 @@ const routesObject: NavigationProp[] = Object.keys(routes).map((el) => {
 });
 
 export default class Header extends Component {
-  render() {
+  render(): JSX.Element {
     console.log({ routesObject });
     return (
       <header className="header">

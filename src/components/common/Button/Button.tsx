@@ -48,7 +48,7 @@ export enum ButtonSizeTypes {
 
 interface Button {
   text: string;
-  onClick: () => any;
+  onClick: () => void;
   type?: ButtonActionTypes;
   color?: ButtonColorTypes;
   size?: ButtonSizeTypes;
@@ -64,7 +64,7 @@ export const Button = ({
   size = ButtonSizeTypes.SMALL,
   form,
   id,
-}: Button) => {
+}: Button): JSX.Element => {
   return (
     <button
       type={type}

@@ -1,7 +1,6 @@
 import React, { Component, MouseEvent } from 'react';
-import Button from '../Button';
-import ButtonColorTypes from '../Button';
-import Spinner from '../Spinner';
+import { Button, ButtonColorTypes } from '../Button/Button';
+import Spinner from '../Spinner/Spinner';
 import './Table.scss';
 /*
   A Table component needs next required parameters to be used:
@@ -13,6 +12,7 @@ import './Table.scss';
           width: String,
           sortable: Boolean,
           sortFunc: Function,
+          render: Function,
         }
         heading - is a name of column, that will be displayed in the column head.
         dataKey - is a key, by which the column will get it's values from data prop.
@@ -20,6 +20,9 @@ import './Table.scss';
         size units: px, %, em, rem, etc. All columns width are set to 50px by default.
         sortable - determines wheter the column should be sortable.
         sortFunc: a function, which is called once the column is sorted.
+        render: a function, that is called during the table rendering, this function
+          may be used for putting special JSX-elements into table cells, or configuring
+          rowSpan and colSpan attributes of the cell.  
     2) data - an array of objects, a data that will be shown in the table. The
         data won't be shown in the table, unless neccessary dataKeys are provides in 
         columns prop.
@@ -48,21 +51,35 @@ export interface TableDataStructure {
   [key: string]: string;
 }
 
-interface ColumnSortingFunctionParams {
+export interface ColumnSortingFunctionParams {
   dataKey: string;
   order: 'asc' | 'desc';
 }
 
-interface ColumnSortingFunction {
-  (obj: ColumnSortingFunctionParams): TableDataStructure;
+interface RowColSpanConfig {
+  rowSpan?: number;
+  colSpan?: number;
 }
 
-interface TableColumn {
+export interface CellRenderProps {
+  children: JSX.Element | string;
+  props?: RowColSpanConfig;
+}
+
+interface RenderFuncArgs {
+  value: JSX.Element | string;
+  index: number;
+  rowKey: string | number;
+  dataLength: number;
+}
+
+export interface TableColumn {
   heading: string;
   dataKey: string;
   width: string;
   sortable: boolean;
-  sortFunc: ColumnSortingFunction;
+  sortFunc?: (args: ColumnSortingFunctionParams) => TableDataStructure;
+  render?: (args: RenderFuncArgs) => CellRenderProps;
 }
 
 interface TableProps {
@@ -104,7 +121,7 @@ export class Table extends Component<TableProps, TableState> {
     };
   }
 
-  toggleSortOrder = (key: string) => {
+  toggleSortOrder = (key: string): void => {
     const newColumnOrder =
       this.state.sortingManager[key] === 'asc' ? 'desc' : 'asc';
     this.setState({
@@ -115,20 +132,24 @@ export class Table extends Component<TableProps, TableState> {
     });
   };
 
-  onSortColumn = (column: TableColumn) => {
+  onSortColumn = (column: TableColumn): void => {
     this.toggleSortOrder(column.dataKey);
-    column.sortFunc({
-      dataKey: column.dataKey,
-      order: this.state.sortingManager[column.dataKey],
-    });
+    column.sortFunc &&
+      column.sortFunc({
+        dataKey: column.dataKey,
+        order: this.state.sortingManager[column.dataKey],
+      });
   };
 
-  onRowClickOwn = (e: MouseEvent<HTMLTableRowElement>, id: string | number) => {
+  onRowClickOwn = (
+    e: MouseEvent<HTMLTableRowElement>,
+    id: string | number,
+  ): void => {
     if (e.currentTarget.nodeName === 'BUTTON') return;
     this.props.onRowClick(id);
   };
 
-  onPageChangeOwn = (direction: 'asc' | 'desc') => {
+  onPageChangeOwn = (direction: 'asc' | 'desc'): void => {
     if (this.props.page === 1 && direction === 'desc') {
       return;
     }
@@ -138,7 +159,7 @@ export class Table extends Component<TableProps, TableState> {
     this.props.onPageChange && this.props.onPageChange(direction);
   };
 
-  render() {
+  render(): JSX.Element {
     const {
       columns,
       data,
@@ -197,11 +218,32 @@ export class Table extends Component<TableProps, TableState> {
                   key={obj[rowKey]}
                   onClick={(e) => this.onRowClickOwn(e, obj[rowKey])}
                 >
-                  {columns.map((col, idx) => {
+                  {columns.map((col, index) => {
+                    const cellRenderObj =
+                      col.render &&
+                      col.render({
+                        value: obj[col.dataKey] || '',
+                        index: data.indexOf(obj),
+                        rowKey: obj[rowKey],
+                        dataLength: data.length,
+                      });
+                    if (cellRenderObj) {
+                      return cellRenderObj.props?.colSpan === 0 ||
+                        cellRenderObj.props?.rowSpan === 0 ? null : (
+                        <td
+                          className="table__cell"
+                          key={index}
+                          style={{ width: col.width || '50px' }}
+                          {...{ ...cellRenderObj.props }}
+                        >
+                          {cellRenderObj.children}
+                        </td>
+                      );
+                    }
                     return (
                       <td
                         className="table__cell"
-                        key={idx}
+                        key={index}
                         style={{ width: col.width || '50px' }}
                       >
                         {obj[col.dataKey] || ''}

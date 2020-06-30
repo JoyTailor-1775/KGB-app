@@ -1,11 +1,11 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { routes } from './config/routes';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 import CardsPage from './pages/CardsPage';
 import StatsPage from './pages/StatsPage';
 
-function App() {
+function App(): JSX.Element {
   return (
     <>
       <Header />
