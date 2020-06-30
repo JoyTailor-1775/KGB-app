@@ -56,6 +56,9 @@ export default class CardsPage extends Component<any, any> {
           heading: 'Title',
           width: '110px',
           render: this.renderFunc,
+          onCellClick: () => {
+            console.log('hello from cell');
+          },
         },
         { heading: 'Year', dataKey: 'release_year', width: '100px' },
         { heading: 'Format', dataKey: 'format', width: '100px' },

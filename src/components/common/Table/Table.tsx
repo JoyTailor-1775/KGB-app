@@ -5,15 +5,19 @@ import './Table.scss';
 /*
   A Table component needs next required parameters to be used:
     1) columns: [Object] - an array of objects, which represents the properties of 
-        the table columns. Each column objects should looks like:
-        {
-          heading: String,
-          dataKey: String,
-          width: String,
-          sortable: Boolean,
-          sortFunc: Function,
-          render: Function,
-        }
+        the table columns. Each column objects next parameters:
+
+        Required:
+          - heading: String,
+          - dataKey: String,
+
+        Optional:
+           - width: String,
+           - sortable: Boolean,
+           - sortFunc: Function,
+           - render: Function,
+           - onCellClick: Function
+        
         heading - is a name of column, that will be displayed in the column head.
         dataKey - is a key, by which the column will get it's values from data prop.
         width - is a desired width of a column, should be represented in semantic css 
@@ -23,6 +27,7 @@ import './Table.scss';
         render: a function, that is called during the table rendering, this function
           may be used for putting special JSX-elements into table cells, or configuring
           rowSpan and colSpan attributes of the cell.  
+        onCellClick: a function, that is called on the column's cell click.
     2) data - an array of objects, a data that will be shown in the table. The
         data won't be shown in the table, unless neccessary dataKeys are provides in 
         columns prop.
@@ -45,6 +50,7 @@ import './Table.scss';
         pagination arrows are clicked. Returns page number and page change direction (asc or desc)
     6) totalPages: Number (default value = 1) - pagination paramter, used for correct
         pagination limitation work.
+    7) theme: red | green | grey - determines a color theme of the table. Default theme is grey.
 */
 
 export interface TableDataStructure {
@@ -76,10 +82,11 @@ interface RenderFuncArgs {
 export interface TableColumn {
   heading: string;
   dataKey: string;
-  width: string;
-  sortable: boolean;
+  width?: string;
+  sortable?: boolean;
   sortFunc?: (args: ColumnSortingFunctionParams) => TableDataStructure;
   render?: (args: RenderFuncArgs) => CellRenderProps;
+  onCellClick?: () => void;
 }
 
 interface TableProps {
@@ -94,6 +101,7 @@ interface TableProps {
   page?: number;
   onPageChange?: (direction: 'asc' | 'desc') => number;
   totalPages?: number;
+  theme?: 'red' | 'green' | 'grey';
 }
 
 interface SortingObject {
@@ -170,9 +178,10 @@ export class Table extends Component<TableProps, TableState> {
       pagination = false,
       page = 1,
       totalPages = 1,
+      theme = 'red',
     } = this.props;
     return (
-      <table className={`table ${pagination && 'bottom-rounded'}`}>
+      <table className={`table ${theme} ${pagination && 'bottom-rounded'}`}>
         <thead className="table__head">
           <tr className="table__row">
             {columns.map((col, idx) => {
@@ -227,26 +236,20 @@ export class Table extends Component<TableProps, TableState> {
                         rowKey: obj[rowKey],
                         dataLength: data.length,
                       });
-                    if (cellRenderObj) {
-                      return cellRenderObj.props?.colSpan === 0 ||
-                        cellRenderObj.props?.rowSpan === 0 ? null : (
-                        <td
-                          className="table__cell"
-                          key={index}
-                          style={{ width: col.width || '50px' }}
-                          {...{ ...cellRenderObj.props }}
-                        >
-                          {cellRenderObj.children}
-                        </td>
-                      );
-                    }
-                    return (
+                    return cellRenderObj?.props?.colSpan === 0 ||
+                      cellRenderObj?.props?.rowSpan === 0 ? null : (
                       <td
                         className="table__cell"
                         key={index}
                         style={{ width: col.width || '50px' }}
+                        {...{ ...cellRenderObj?.props }}
+                        {...(col.onCellClick
+                          ? { onClick: col.onCellClick }
+                          : {})}
                       >
-                        {obj[col.dataKey] || ''}
+                        {cellRenderObj && cellRenderObj.children
+                          ? cellRenderObj.children
+                          : obj[col.dataKey] || ''}
                       </td>
                     );
                   })}
