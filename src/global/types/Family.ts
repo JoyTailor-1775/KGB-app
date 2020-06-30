@@ -1,7 +1,12 @@
-import FamilyMember from './FamilyMember';
+export interface FamilyMember {
+  name: string;
+  gender: string;
+  age: number;
+  ssn: string;
+}
 
-type Family = {
-  [key in 'primary' | 'spouse' | 'children']?: FamilyMember;
+export type Family = {
+  primary: FamilyMember;
+  spouse?: FamilyMember;
+  children?: FamilyMember[];
 };
-
-export default Family;

@@ -1,109 +1,42 @@
 import React, { Component } from 'react';
-import * as api from '../api/families';
-import { Table } from '../components/common/Table/Table';
+import FamilyCard from '../components/FamilyCard/FamilyCard';
+import { Family } from '../global/types/Family';
+import FamilyStatuses from '../global/types/FamilyStatuses';
 
-const testData: any = [
+const testData: Family[] = [
   {
-    id: 0,
-    title: 'Some title',
-    release_year: '1983',
-    format: 'sdfs',
-    cast: 'one, two, three',
+    primary: { name: 'Test User', gender: 'M', age: 32, ssn: '111-22-3333' },
   },
   {
-    id: 1,
-    title: 'Some title',
-    release_year: '1983',
-    format: 'sdfs',
-    cast: 'one, two, three',
+    primary: { name: 'Test User', gender: 'M', age: 32, ssn: '111-22-3333' },
+    spouse: { name: 'Test2 User', gender: 'F', age: 32, ssn: '111-22-3334' },
+    children: [{ name: 'Test User', gender: 'M', age: 3, ssn: '111-22-3335' }],
   },
   {
-    id: 2,
-    title: 'Some title',
-    release_year: '1983',
-    format: 'sdfs',
-    cast: 'one, two, three',
+    primary: { name: 'Test User', gender: 'M', age: 32, ssn: '111-22-3333' },
+    spouse: { name: 'Test2 User', gender: 'F', age: 32, ssn: '111-22-3334' },
   },
   {
-    id: 3,
-    title: 'Some title',
-    release_year: '1983',
-    format: 'sdfs',
-    cast: 'one, two, three',
+    primary: { name: 'Test User', gender: 'M', age: 32, ssn: '111-22-3333' },
+    children: [{ name: 'Test User', gender: 'M', age: 3, ssn: '111-22-3335' }],
   },
   {
-    id: 4,
-    title: 'Some title',
-    release_year: '1983',
-    format: 'sdfs',
-    cast: 'one, two, three',
-  },
-  {
-    id: 5,
-    title: 'Some title',
-    release_year: '1983',
-    format: 'sdfs',
-    cast: 'one, two, three',
+    primary: { name: 'Test User', gender: 'M', age: 32, ssn: '111-22-3333' },
+    children: [
+      { name: 'Test User', gender: 'M', age: 3, ssn: '111-22-3335' },
+      { name: 'Test User', gender: 'M', age: 3, ssn: '111-22-3335' },
+    ],
   },
 ];
 
-export default class CardsPage extends Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      tableColumns: [
-        {
-          heading: 'Title',
-          width: '110px',
-          render: this.renderFunc,
-          onCellClick: () => {
-            console.log('hello from cell');
-          },
-        },
-        { heading: 'Year', dataKey: 'release_year', width: '100px' },
-        { heading: 'Format', dataKey: 'format', width: '100px' },
-        { heading: 'Cast', dataKey: 'cast', width: '190px' },
-      ],
-    };
-  }
-  // async componentDidMount() {
-  //   const res: any = await api.getFamilies();
-  //   console.log({ res });
-  // }
-
-  renderFunc = ({
-    index,
-    dataLength,
-  }: {
-    index: any;
-    dataLength: any;
-  }): any => {
-    if (index === 0) {
-      return {
-        children: 'children',
-        props: {
-          rowSpan: 6,
-        },
-      };
-    } else {
-      return {
-        children: '',
-        props: {
-          rowSpan: 0,
-        },
-      };
-    }
-  };
-  render() {
+export default class CardsPage extends Component {
+  render(): JSX.Element {
     return (
-      <div>
-        <Table
-          columns={this.state.tableColumns}
-          rowKey="id"
-          data={testData}
-          onRowClick={() => ({})}
-        />
-      </div>
+      <main className="page">
+        {testData.map((el) => (
+          <FamilyCard cardInfo={el} />
+        ))}
+      </main>
     );
   }
 }

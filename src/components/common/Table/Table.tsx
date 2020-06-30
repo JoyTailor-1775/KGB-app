@@ -68,11 +68,11 @@ interface RowColSpanConfig {
 }
 
 export interface CellRenderProps {
-  children: JSX.Element | string;
+  children?: JSX.Element | string;
   props?: RowColSpanConfig;
 }
 
-interface RenderFuncArgs {
+export interface RenderFuncArgs {
   value: JSX.Element | string;
   index: number;
   rowKey: string | number;
