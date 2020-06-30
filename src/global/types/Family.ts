@@ -6,7 +6,5 @@ export interface FamilyMember {
 }
 
 export type Family = {
-  primary: FamilyMember;
-  spouse?: FamilyMember;
-  children?: FamilyMember[];
+  [index: string]: FamilyMember | FamilyMember[];
 };

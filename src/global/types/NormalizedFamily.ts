@@ -1,5 +1,5 @@
 import { FamilyMember } from './Family';
 
 export interface NormalizedFamilyMember extends FamilyMember {
-  memberType: string;
+  memberType: 'primary' | 'spouse' | 'children';
 }
