@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Header.scss';
 import NavigationProp from '../../global/types/NavigationProp';
 import { routes } from '../../config/routes';
-import NavBar from '../NavBar';
+import NavBar from '../NavBar/NavBar';
 
 const routesObject: NavigationProp[] = Object.keys(routes).map((el) => {
   return {
@@ -13,7 +13,6 @@ const routesObject: NavigationProp[] = Object.keys(routes).map((el) => {
 
 export default class Header extends Component {
   render(): JSX.Element {
-    console.log({ routesObject });
     return (
       <header className="header">
         <img

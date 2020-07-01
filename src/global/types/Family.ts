@@ -3,8 +3,12 @@ export interface FamilyMember {
   gender: string;
   age: number;
   ssn: string;
+  [key: string]: string | number;
 }
 
 export type Family = {
-  [index: string]: FamilyMember | FamilyMember[];
+  primary: FamilyMember;
+  spouse?: FamilyMember;
+  children?: FamilyMember[];
+  [key: string]: FamilyMember | FamilyMember[] | undefined;
 };

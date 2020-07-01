@@ -31,10 +31,6 @@ import './Table.scss';
     2) data - an array of objects, a data that will be shown in the table. The
         data won't be shown in the table, unless neccessary dataKeys are provides in 
         columns prop.
-    3) onRowClick() - a method, which is called, after click on a certain table row. 
-        Returns the row id.
-    4) rowKey - number | string, it's a unique key for every table row, could be any number or string
-        , since it's uniqueness is assurred.
 
   The Table also has optional parameters:
     1) loading: Boolean (default value = false). Determines wheter to show a loading
@@ -44,13 +40,17 @@ import './Table.scss';
     3) onDelete: Function (default value = () => ({})). Used with deletable flag.
         A method, which is called whenever a Delete button is clicked on a certain
         row. Returns an id of the clicked row.
-    4) pagination: Boolean (default value = false) - enables/disables pagination.
-    4) page - number (default value = 1) - pagination parameter, represents current page number.
-    5) onPageChange: Function - pagination parameters, a function, that is called whenever
+    4) onRowClick() - a method, which is called, after click on a certain table row. 
+        Returns the row id.
+    5) pagination: Boolean (default value = false) - enables/disables pagination.
+    6) page - number (default value = 1) - pagination parameter, represents current page number.
+    7) onPageChange: Function - pagination parameters, a function, that is called whenever
         pagination arrows are clicked. Returns page number and page change direction (asc or desc)
-    6) totalPages: Number (default value = 1) - pagination paramter, used for correct
+    8) totalPages: Number (default value = 1) - pagination paramter, used for correct
         pagination limitation work.
-    7) theme: red | green | grey - determines a color theme of the table. Default theme is grey.
+    9) theme: red | green | grey - determines a color theme of the table. Default theme is grey.
+    10) rowKey - number | string, it's a unique key for every table row, could be any number or string
+    , since it's uniqueness is assurred.
 */
 
 export interface TableDataStructure {
@@ -92,8 +92,8 @@ export interface TableColumn {
 interface TableProps {
   columns: TableColumn[];
   data: TableDataStructure[];
-  onRowClick: (id: string | number) => void;
-  rowKey: string | number;
+  rowKey?: string | number;
+  onRowClick?: (id: string | number) => void;
   loading?: boolean;
   deletable?: boolean;
   onDelete?: (rowKey: string | number) => void;
@@ -154,7 +154,7 @@ export class Table extends Component<TableProps, TableState> {
     id: string | number,
   ): void => {
     if (e.currentTarget.nodeName === 'BUTTON') return;
-    this.props.onRowClick(id);
+    this.props.onRowClick && this.props.onRowClick(id);
   };
 
   onPageChangeOwn = (direction: 'asc' | 'desc'): void => {
@@ -171,7 +171,6 @@ export class Table extends Component<TableProps, TableState> {
     const {
       columns,
       data,
-      rowKey,
       loading = false,
       deletable = false,
       onDelete = () => ({}),
@@ -220,7 +219,9 @@ export class Table extends Component<TableProps, TableState> {
               <td>No Data</td>
             </tr>
           ) : (
-            data.map((obj) => {
+            data.map((obj, index) => {
+              // Taking rowKey and assigning default value if there is no one.
+              const rowKey = this.props.rowKey ? this.props.rowKey : index;
               return (
                 <tr
                   className="table__row"

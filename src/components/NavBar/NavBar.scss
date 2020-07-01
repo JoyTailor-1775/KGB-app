@@ -1,0 +1,30 @@
+@import '../../global/variables.scss';
+
+.nav {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  min-width: 120px;
+  margin-right: 25px;
+
+  &__link {
+    color: $cherry;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+
+    &.highlighted {
+      font-weight: 700;
+
+      &::after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: $cherry;
+        position: absolute;
+      }
+    }
+  }
+}

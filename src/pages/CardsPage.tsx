@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FamilyCard from '../components/FamilyCard/FamilyCard';
-import { Family } from '../global/types/Family';
-import FamilyStatuses from '../global/types/FamilyStatuses';
+import { Family, FamilyMember } from '../global/types/Family';
+import normalizeFamilyApiData from '../helpers/normalizeFamilyApiData';
 
 const testData: Family[] = [
   {
@@ -33,9 +33,10 @@ export default class CardsPage extends Component {
   render(): JSX.Element {
     return (
       <main className="page">
+        {/* I'm a CardsPage
         {testData.map((el) => (
           <FamilyCard cardInfo={el} />
-        ))}
+        ))} */}
       </main>
     );
   }
