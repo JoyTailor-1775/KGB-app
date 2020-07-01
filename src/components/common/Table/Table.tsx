@@ -54,7 +54,7 @@ import './Table.scss';
 */
 
 export interface TableDataStructure {
-  [key: string]: string;
+  [key: string]: string | number;
 }
 
 export interface ColumnSortingFunctionParams {
@@ -73,7 +73,7 @@ export interface CellRenderProps {
 }
 
 export interface RenderFuncArgs {
-  value: JSX.Element | string;
+  value: JSX.Element | string | number;
   index: number;
   rowKey: string | number;
   dataLength: number;
