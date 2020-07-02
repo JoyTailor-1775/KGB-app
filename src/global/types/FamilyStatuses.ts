@@ -1,7 +1,7 @@
 enum FamilyStatuses {
-  APPROVED = 'APPROVED',
-  DECLINED = 'DECLINED',
-  UNREVIEWED = 'UNREVIEWED',
+  APPROVED = 'Approved',
+  DECLINED = 'Declined',
+  UNREVIEWED = 'Unreviewed',
 }
 
 export default FamilyStatuses;
