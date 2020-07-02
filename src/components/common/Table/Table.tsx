@@ -89,6 +89,8 @@ export interface TableColumn {
   onCellClick?: () => void;
 }
 
+export type TableTheme = 'grey' | 'red' | 'green';
+
 interface TableProps {
   columns: TableColumn[];
   data: TableDataStructure[];
@@ -101,7 +103,7 @@ interface TableProps {
   page?: number;
   onPageChange?: (direction: 'asc' | 'desc') => number;
   totalPages?: number;
-  theme?: 'red' | 'green' | 'grey';
+  theme?: TableTheme;
 }
 
 interface SortingObject {
@@ -177,10 +179,10 @@ export class Table extends Component<TableProps, TableState> {
       pagination = false,
       page = 1,
       totalPages = 1,
-      theme = 'red',
+      theme = 'grey',
     } = this.props;
     return (
-      <table className={`table ${theme} ${pagination && 'bottom-rounded'}`}>
+      <table className={`table ${theme} ${pagination ? '' : 'bottom-rounded'}`}>
         <thead className="table__head">
           <tr className="table__row">
             {columns.map((col, idx) => {
@@ -219,13 +221,13 @@ export class Table extends Component<TableProps, TableState> {
               <td>No Data</td>
             </tr>
           ) : (
-            data.map((obj, index) => {
+            data.map((obj, idx) => {
               // Taking rowKey and assigning default value if there is no one.
-              const rowKey = this.props.rowKey ? this.props.rowKey : index;
+              const rowKey = this.props.rowKey ? this.props.rowKey : idx;
               return (
                 <tr
                   className="table__row"
-                  key={obj[rowKey]}
+                  key={rowKey}
                   onClick={(e) => this.onRowClickOwn(e, obj[rowKey])}
                 >
                   {columns.map((col, index) => {
@@ -234,7 +236,7 @@ export class Table extends Component<TableProps, TableState> {
                       col.render({
                         value: obj[col.dataKey] || '',
                         index: data.indexOf(obj),
-                        rowKey: obj[rowKey],
+                        rowKey: rowKey,
                         dataLength: data.length,
                       });
                     return cellRenderObj?.props?.colSpan === 0 ||

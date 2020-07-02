@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import FamilyCard from '../components/FamilyCard/FamilyCard';
-import { Family, FamilyMember } from '../global/types/Family';
-import normalizeFamilyApiData from '../helpers/normalizeFamilyApiData';
+import FamilyCard from '../../components/FamilyCard/FamilyCard';
+import { Family, FamilyMember } from '../../global/types/Family';
+import FamilyRecord from '../../global/types/FamilyRecord';
+import normalizeFamilyApiData from '../../helpers/normalizeFamilyApiData';
+import '../../global/stylesheets/page.scss';
+import './CardsPage.scss';
 
 const testData: Family[] = [
   {
@@ -29,14 +32,17 @@ const testData: Family[] = [
   },
 ];
 
+const formattedTestData: FamilyRecord[] = normalizeFamilyApiData(testData);
+
 export default class CardsPage extends Component {
   render(): JSX.Element {
     return (
       <main className="page">
-        {/* I'm a CardsPage
-        {testData.map((el) => (
-          <FamilyCard cardInfo={el} />
-        ))} */}
+        <div className="cards-container">
+          {formattedTestData.map((el, idx) => (
+            <FamilyCard cardInfo={el} key={idx} />
+          ))}
+        </div>
       </main>
     );
   }

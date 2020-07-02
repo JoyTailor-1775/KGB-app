@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import FamilyRecord from '../../global/types/FamilyRecord';
 import FamilyStatuses from '../../global/types/FamilyStatuses';
-import { Family, FamilyMember } from '../../global/types/Family';
-
+import { FamilyMember } from '../../global/types/Family';
+import './FamilyCard.scss';
 import {
   Table,
   TableColumn,
+  TableTheme,
   RenderFuncArgs,
   CellRenderProps,
 } from '../common/Table/Table';
-import approvedStamp from '../../images/approved-stamp.png';
-import declinedStamp from '../../images/declined-stamp.png';
+import Cross from '../icons/Cross';
+import Tick from '../icons/Tick';
 
 interface NormalizedFamilyMember extends FamilyMember {
   memberType: string;
@@ -23,6 +24,7 @@ interface Props {
 interface State {
   cardColumns: TableColumn[];
   formattedCardData: NormalizedFamilyMember[];
+  cardColor: TableTheme;
 }
 
 export default class FamilyCard extends Component<Props, State> {
@@ -33,31 +35,38 @@ export default class FamilyCard extends Component<Props, State> {
         {
           heading: 'Status',
           dataKey: '',
-          width: '60px',
+          width: '100px',
+          onCellClick: this.onChangeStatus,
           render: this.renderStatusCell,
         },
         {
           heading: 'Member Type',
           dataKey: 'memberType',
+          width: '60px',
         },
         {
           heading: 'SSN',
           dataKey: 'ssn',
+          width: '100px',
         },
         {
           heading: 'Gender',
           dataKey: 'gender',
+          width: '30px',
         },
         {
           heading: 'Age',
           dataKey: 'age',
+          width: '30px',
         },
         {
           heading: 'Name',
           dataKey: 'name',
+          width: '110px',
         },
       ],
       formattedCardData: this.formatCardInfo(this.props.cardInfo),
+      cardColor: this.defineCardColor(),
     };
   }
 
@@ -99,24 +108,38 @@ export default class FamilyCard extends Component<Props, State> {
 
     if (index === 0) {
       if (this.props.cardInfo.status !== FamilyStatuses.UNREVIEWED) {
-        const imgSrc =
-          this.props.cardInfo.status === FamilyStatuses.APPROVED
-            ? approvedStamp
-            : declinedStamp;
-        cellRenderProps.children = (
-          <img
-            className="family-card__stamp"
-            src={imgSrc}
-            height="auto"
-            width="80px"
-          />
-        );
+        cellRenderProps.children =
+          this.props.cardInfo.status === FamilyStatuses.APPROVED ? (
+            <Tick width="60px" color="#2fbd3e" />
+          ) : (
+            <Cross width="60px" color="#a30000" />
+          );
       }
       cellRenderProps.props = {
         rowSpan: dataLength,
       };
+    } else {
+      cellRenderProps.props = {
+        rowSpan: 0,
+      };
     }
     return cellRenderProps;
+  };
+
+  defineCardColor = (): TableTheme => {
+    let color;
+    switch (this.props.cardInfo.status) {
+      case FamilyStatuses.UNREVIEWED:
+        color = 'grey';
+        break;
+      case FamilyStatuses.APPROVED:
+        color = 'green';
+        break;
+      case FamilyStatuses.DECLINED:
+        color = 'red';
+        break;
+    }
+    return color as TableTheme;
   };
 
   onChangeStatus = (): void => {
@@ -125,10 +148,13 @@ export default class FamilyCard extends Component<Props, State> {
 
   render(): JSX.Element {
     return (
-      <Table
-        columns={this.state.cardColumns}
-        data={this.state.formattedCardData}
-      />
+      <div className="family-card__container">
+        <Table
+          columns={this.state.cardColumns}
+          data={this.state.formattedCardData}
+          theme={this.state.cardColor}
+        />
+      </div>
     );
   }
 }
