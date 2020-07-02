@@ -1,0 +1,13 @@
+.cards-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1000px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+
+  @media (max-width: 960px) {
+    max-width: 600px;
+    justify-content: center;
+    flex-direction: column;
+  }
+}

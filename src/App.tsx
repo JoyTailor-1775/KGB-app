@@ -1,16 +1,20 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Routes } from './config/routes';
-import CardsPage from './pages/CardsPage';
-import StatsPage from './pages/StatsPage';
+import { routes } from './config/routes';
+import Header from './components/Header/Header';
+import CardsPage from './pages/CardsPage/CardsPage';
+import StatsPage from './pages/StatsPage/StatsPage';
 
-function App() {
+function App(): JSX.Element {
   return (
-    <Switch>
-      <Route path={Routes.CARDS} component={CardsPage} />
-      <Route path={Routes.STATS} component={StatsPage} />
-      <Redirect to={Routes.CARDS} />
-    </Switch>
+    <>
+      <Header />
+      <Switch>
+        <Route path={routes.CARDS} component={CardsPage} />
+        <Route path={routes.STATS} component={StatsPage} />
+        <Redirect to={routes.CARDS} />
+      </Switch>
+    </>
   );
 }
 
