@@ -52,3 +52,14 @@ export type FamilyActions =
   | FetchRequestAction
   | UploadFamiliesAction
   | ChangeFamilyStatusAction;
+
+export type FamiliesTypes = {
+  primary: number;
+  primarySpouse: number;
+  primarySpouseChildren: number;
+  [key: string]: number;
+};
+
+export type FamiliesStatsStatuses =
+  | FamilyStatuses.APPROVED
+  | FamilyStatuses.DECLINED;
