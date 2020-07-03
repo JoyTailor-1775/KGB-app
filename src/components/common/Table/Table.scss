@@ -1,0 +1,165 @@
+@import '../../../global/variables.scss';
+
+.table {
+  box-sizing: border-box;
+  border-collapse: collapse;
+  border-radius: 15px 15px 0px 0px;
+  table-layout: fixed;
+
+  &.bottom-rounded {
+    border-radius: 15px;
+  }
+
+  &__body {
+    max-height: 600px;
+    overflow-y: scroll;
+    width: 100%;
+
+    .table__row {
+      cursor: pointer;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__heading {
+    color: #ffffff;
+    padding: 12px 5px;
+    box-sizing: border-box;
+
+    &:first-child {
+      border-radius: 15px 0px 0px 0px;
+    }
+
+    &:last-child {
+      border-radius: 0px 15px 0px 0px;
+    }
+
+    &--delete {
+      width: 90px;
+    }
+
+    .triangle {
+      display: inline-block;
+      margin-left: 10px;
+      cursor: pointer;
+      width: 0;
+      height: 0;
+
+      &.desc {
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 8px solid #ffffff;
+      }
+
+      &.asc {
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid #ffffff;
+      }
+    }
+  }
+
+  &__row {
+    &:last-child {
+      .table__cell {
+        padding-bottom: 10px;
+      }
+    }
+
+    &--no-data-msg {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70px;
+      color: $dark-black;
+    }
+
+    &--footer {
+      display: flex;
+      justify-content: flex-end;
+      background-color: $dark-grey;
+      border-radius: 0px 0px 15px 15px;
+
+      .pagination {
+        padding: 10px 15px;
+        color: #ffff;
+        font-size: 22px;
+        font-weight: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &__arrow {
+          border: solid #ffff;
+          border-width: 0 4px 4px 0;
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          cursor: pointer;
+
+          &.right {
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+          }
+
+          &.left {
+            transform: rotate(135deg);
+            -webkit-transform: rotate(135deg);
+          }
+
+          &.disable {
+            cursor: not-allowed;
+            border-color: rgba($color: #ffff, $alpha: 0.4);
+          }
+        }
+      }
+    }
+  }
+
+  &__cell {
+    text-align: center;
+    padding: 12px 5px;
+    box-sizing: border-box;
+
+    &--delete {
+      width: 90px;
+    }
+  }
+
+  &__spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@mixin tableTheme($shadowColor, $headingColor, $rowColor, $rowHoverColor) {
+  box-shadow: 0px 5px 15px rgba($color: $shadowColor, $alpha: 0.3);
+  .table__heading {
+    background-color: $headingColor;
+  }
+
+  .table__row {
+    &:nth-child(2n) {
+      background-color: $rowColor;
+    }
+    &:hover {
+      background-color: $rowHoverColor;
+    }
+  }
+}
+
+.grey {
+  @include tableTheme(#000000, $dark-grey, $base-grey, $deep-grey);
+}
+
+.green {
+  @include tableTheme($green, $green, $base-green, $light-green);
+}
+
+.red {
+  @include tableTheme($red, $red, $base-rose, $rose);
+}

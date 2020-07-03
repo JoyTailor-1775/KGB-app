@@ -1,0 +1,16 @@
+@import '../../global/variables.scss';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: solid 3px $cherry;
+  background-color: rgba($color: #000000, $alpha: 0.03);
+  box-shadow: 0px 5px 5px rgba($color: $cherry, $alpha: 0.3);
+
+  &__title {
+    text-transform: uppercase;
+    color: $cherry;
+  }
+}
