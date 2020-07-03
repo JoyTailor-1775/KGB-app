@@ -32,15 +32,15 @@ const getFamiliesStatistics = (state: FamilyState): FamiliesStats[] => {
     status: FamiliesStatsStatuses,
     family: Family,
   ): void => {
-    if (family.spouse && family.children) {
+    if (family.children) {
       updateStatValue(status, 'primarySpouseChildren');
-      return;
     }
-    if (family.spouse) {
+    if (family.spouse && !family.children) {
       updateStatValue(status, 'primarySpouse');
-      return;
     }
-    updateStatValue(status, 'primary');
+    if (!family.children && !family.spouse) {
+      updateStatValue(status, 'primary');
+    }
   };
 
   const approvedFamilies = state.families.filter(
