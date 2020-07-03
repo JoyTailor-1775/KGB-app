@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import FamilyRecord from '../../global/types/FamilyRecord';
-import FamilyStatuses from '../../global/types/FamilyStatuses';
+import { FamilyRecord } from '../../global/types/Family';
+import { FamilyStatuses } from '../../global/types/Family';
 import { FamilyMember } from '../../global/types/Family';
 import './FamilyCard.scss';
 import {

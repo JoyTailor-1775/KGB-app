@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import FamilyCard from '../../components/FamilyCard/FamilyCard';
-import { Family, FamilyMember } from '../../global/types/Family';
-import FamilyRecord from '../../global/types/FamilyRecord';
+import { Family, FamilyRecord } from '../../global/types/Family';
 import normalizeFamilyApiData from '../../helpers/normalizeFamilyApiData';
 import '../../global/stylesheets/page.scss';
 import './CardsPage.scss';

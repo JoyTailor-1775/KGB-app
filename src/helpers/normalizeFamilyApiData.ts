@@ -1,7 +1,5 @@
 import uniqid from 'uniqid';
-import FamilyRecord from '../global/types/FamilyRecord';
-import { Family } from '../global/types/Family';
-import FamilyStatuses from '../global/types/FamilyStatuses';
+import { Family, FamilyRecord, FamilyStatuses } from '../global/types/Family';
 
 export default function normalizeFamilyApiData(data: Family[]): FamilyRecord[] {
   return data.map((family) => {
