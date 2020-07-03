@@ -1,8 +1,3 @@
-1. Explain why and how a cors extension for the browser should be used;
-2. Explain why there is lot's of additional unnessessary things in the Table component;
-3. If you have time - breake the Table component into three separate;
-4. Update comments in the common Table component
-
 ## KGB-app
 
 This app is created for you, my dear comrade, to easily and fast detect and reveal communism
