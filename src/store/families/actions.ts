@@ -11,8 +11,7 @@ import {
   FamiliesState,
   ErrorState,
 } from './types';
-import FamilyRecord from '../../global/types/FamilyRecord';
-import FamilyStatuses from '../../global/types/FamilyStatuses';
+import { FamilyRecord, FamilyStatuses } from '../../global/types/Family';
 
 const createAction = <Type extends string>(type: Type): Action<Type> => ({
   type,

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Table, TableColumn, TableTheme } from '../common/Table/Table';
-import FamilyStatuses from '../../global/types/FamilyStatuses';
+import { Table, TableColumn } from '../common/Table/Table';
+import { FamilyStatuses, FamiliesStats } from '../../global/types/Family';
 import './StatsTable.scss';
 
 const testData: FamiliesStats[] = [
@@ -17,14 +17,6 @@ const testData: FamiliesStats[] = [
     primarySpouseChildren: 4,
   },
 ];
-
-interface FamiliesStats {
-  status: FamilyStatuses;
-  primary: number;
-  primarySpouse: number;
-  primarySpouseChildren: number;
-  [key: string]: number | FamilyStatuses;
-}
 
 const tableColumns: TableColumn[] = [
   { heading: 'Status', dataKey: 'status', width: '90px' },

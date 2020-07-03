@@ -6,14 +6,10 @@ import {
   FamiliesState,
   FamilyActionTypes,
   FamilyActions,
-  FetchSuccessAction,
   FetchErrorAction,
-  FetchRequestAction,
   UploadFamiliesAction,
   ChangeFamilyStatusAction,
-  ChangeFamilyStatusPayload,
 } from './types';
-import FamilyRecord from '../../global/types/FamilyRecord';
 
 const handleError = (
   state: ErrorState,
@@ -94,6 +90,7 @@ const familiesReducer: Reducer<FamiliesState, FamilyActions> = (
 };
 
 export default combineReducers({
+  families: familiesReducer,
   loading: loadingReducer,
   error: errorReducer,
 });

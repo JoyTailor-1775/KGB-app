@@ -1,5 +1,4 @@
-import FamilyRecord from '../../global/types/FamilyRecord';
-import FamilyStatuses from '../../global/types/FamilyStatuses';
+import { FamilyRecord, FamilyStatuses } from '../../global/types/Family';
 import { Action as ReduxAction } from 'redux';
 
 export type Action<Type> = ReduxAction<Type>;
