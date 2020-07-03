@@ -7,13 +7,13 @@ import {
   FamilyStatuses,
 } from '../../global/types/Family';
 import './FamilyCard.scss';
+import { Table } from '../common/Table/Table';
 import {
-  Table,
   TableColumn,
   TableTheme,
   RenderFuncArgs,
   CellRenderProps,
-} from '../common/Table/Table';
+} from '../common/Table/types';
 import Cross from '../icons/Cross';
 import Tick from '../icons/Tick';
 import familiesActions from '../../store/families/actions';

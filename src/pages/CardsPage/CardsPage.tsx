@@ -38,7 +38,9 @@ class CardsPage extends Component<Props> {
   // connection, while LocalStorage may be used only for storing a little portion of data, like auth
   // token, etc.
   componentWillUnmount() {
-    cache.setLSItem<FamilyRecord[]>('families', this.props.families);
+    if (this.props.families.length > 0) {
+      cache.setLSItem<FamilyRecord[]>('families', this.props.families);
+    }
   }
 
   render(): JSX.Element {

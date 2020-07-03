@@ -1,7 +1,16 @@
 import React, { Component, MouseEvent } from 'react';
-import { Button, ButtonColorTypes } from '../Button/Button';
-import Spinner from '../Spinner/Spinner';
 import './Table.scss';
+import {
+  PaginationDirection,
+  SortingObject,
+  TableColumn,
+  TableDataStructure,
+  TableTheme,
+} from './types';
+import TableBody from './TableBody';
+import TableHead from './TableHead';
+import TableFooter from './TableFooter';
+
 /*
   A Table component needs next required parameters to be used:
     1) columns: [Object] - an array of objects, which represents the properties of 
@@ -53,45 +62,11 @@ import './Table.scss';
     , since it's uniqueness is assurred.
 */
 
-export interface TableDataStructure {
-  [key: string]: string | number;
+interface TableState {
+  sortingManager: SortingObject;
 }
 
-export interface ColumnSortingFunctionParams {
-  dataKey: string;
-  order: 'asc' | 'desc';
-}
-
-interface RowColSpanConfig {
-  rowSpan?: number;
-  colSpan?: number;
-}
-
-export interface CellRenderProps {
-  children?: JSX.Element | string;
-  props?: RowColSpanConfig;
-}
-
-export interface RenderFuncArgs {
-  value: JSX.Element | string | number;
-  index: number;
-  rowKey: string | number;
-  dataLength: number;
-}
-
-export interface TableColumn {
-  heading: string;
-  dataKey: string;
-  width?: string;
-  sortable?: boolean;
-  sortFunc?: (args: ColumnSortingFunctionParams) => TableDataStructure;
-  render?: (args: RenderFuncArgs) => CellRenderProps;
-  onCellClick?: () => void;
-}
-
-export type TableTheme = 'grey' | 'red' | 'green';
-
-interface TableProps {
+export interface TableProps {
   columns: TableColumn[];
   data: TableDataStructure[];
   rowKey?: string | number;
@@ -101,17 +76,9 @@ interface TableProps {
   onDelete?: (rowKey: string | number) => void;
   pagination?: boolean;
   page?: number;
-  onPageChange?: (direction: 'asc' | 'desc') => number;
+  onPageChange?: (direction: PaginationDirection) => number;
   totalPages?: number;
   theme?: TableTheme;
-}
-
-interface SortingObject {
-  [key: string]: 'asc' | 'desc';
-}
-
-interface TableState {
-  sortingManager: SortingObject;
 }
 
 export class Table extends Component<TableProps, TableState> {
@@ -173,6 +140,7 @@ export class Table extends Component<TableProps, TableState> {
     const {
       columns,
       data,
+      rowKey,
       loading = false,
       deletable = false,
       onDelete = () => ({}),
@@ -183,113 +151,27 @@ export class Table extends Component<TableProps, TableState> {
     } = this.props;
     return (
       <table className={`table ${theme}`}>
-        <thead className="table__head">
-          <tr className="table__row">
-            {columns.map((col, idx) => {
-              return (
-                <th
-                  className="table__heading"
-                  style={{ width: col.width ? col.width : '50px' }}
-                  key={idx}
-                >
-                  <span className="text">{col.heading}</span>
-                  {col.sortable && (
-                    <div
-                      className={`triangle ${
-                        this.state.sortingManager[col.dataKey]
-                      }`}
-                      onClick={() => this.onSortColumn(col)}
-                    ></div>
-                  )}
-                </th>
-              );
-            })}
-            {deletable && (
-              <th className="table__heading table__heading--delete">Delete</th>
-            )}
-          </tr>
-        </thead>
-        <tbody className="table__body">
-          {loading ? (
-            <tr className="table__spinner">
-              <td>
-                <Spinner />
-              </td>
-            </tr>
-          ) : data.length < 1 ? (
-            <tr className="table__row--no-data-msg">
-              <td>No Data</td>
-            </tr>
-          ) : (
-            data.map((obj, idx) => {
-              // Taking rowKey and assigning default value if there is no one.
-              const rowKey = this.props.rowKey ? this.props.rowKey : idx;
-              return (
-                <tr
-                  className="table__row"
-                  key={rowKey}
-                  onClick={(e) => this.onRowClickOwn(e, obj[rowKey])}
-                >
-                  {columns.map((col, index) => {
-                    const cellRenderObj =
-                      col.render &&
-                      col.render({
-                        value: obj[col.dataKey] || '',
-                        index: data.indexOf(obj),
-                        rowKey: rowKey,
-                        dataLength: data.length,
-                      });
-                    return cellRenderObj?.props?.colSpan === 0 ||
-                      cellRenderObj?.props?.rowSpan === 0 ? null : (
-                      <td
-                        className="table__cell"
-                        key={index}
-                        style={{ width: col.width || '50px' }}
-                        {...{ ...cellRenderObj?.props }}
-                        {...(col.onCellClick
-                          ? { onClick: col.onCellClick }
-                          : {})}
-                      >
-                        {cellRenderObj && cellRenderObj.children
-                          ? cellRenderObj.children
-                          : obj[col.dataKey] !== undefined
-                          ? obj[col.dataKey]
-                          : ''}
-                      </td>
-                    );
-                  })}
-                  {deletable && (
-                    <td className="table__cell table__cell--delete">
-                      <Button
-                        text="X"
-                        color={ButtonColorTypes.ERROR}
-                        onClick={() => onDelete(obj[rowKey])}
-                      />
-                    </td>
-                  )}
-                </tr>
-              );
-            })
-          )}
-        </tbody>
+        <TableHead
+          columns={columns}
+          sortingManager={this.state.sortingManager}
+          onSortColumn={this.onSortColumn}
+          deletable={deletable}
+        />
+        <TableBody
+          loading={loading}
+          data={data}
+          rowKey={rowKey}
+          onRowClickOwn={this.onRowClickOwn}
+          columns={columns}
+          deletable={deletable}
+          onDelete={onDelete}
+        />
         {pagination && (
-          <tfoot className="table__footer">
-            <tr className="table__row--footer ">
-              <td className="pagination">
-                <div
-                  className={`pagination__arrow left ${page < 2 && 'disable'}`}
-                  onClick={() => this.onPageChangeOwn('desc')}
-                ></div>
-                <div className="pagination__page-number">{page}</div>
-                <div
-                  className={`pagination__arrow right ${
-                    page >= totalPages && 'disable'
-                  }`}
-                  onClick={() => this.onPageChangeOwn('asc')}
-                ></div>
-              </td>
-            </tr>
-          </tfoot>
+          <TableFooter
+            onPageChangeOwn={this.onPageChangeOwn}
+            page={page}
+            totalPages={totalPages}
+          />
         )}
       </table>
     );

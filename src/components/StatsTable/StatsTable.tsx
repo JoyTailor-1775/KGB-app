@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, TableColumn } from '../common/Table/Table';
+import { Table } from '../common/Table/Table';
+import { TableColumn } from '../common/Table/types';
 import { FamiliesStats } from '../../global/types/Family';
 import './StatsTable.scss';
 import { RootState } from '../../store/types';
