@@ -1,4 +1,4 @@
-## KGB-app
+# KGB-app
 
 This app is created for you, my dear comrade, to easily and fast detect and reveal communism
 enemies.
@@ -6,7 +6,7 @@ enemies.
 To run the app you need to fork or clone this repositore and run `yarn | npm install` and
 `yarn start | npm start` in the root folder of the project.
 
-# Attention!
+## Attention!
 
 Please, take into consideration the next several notions regarding the project:
 
