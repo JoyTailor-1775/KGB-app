@@ -1,33 +1,50 @@
 import React, { Component } from 'react';
-import { FamilyRecord } from '../../global/types/Family';
-import { FamilyStatuses } from '../../global/types/Family';
-import { FamilyMember } from '../../global/types/Family';
-import './FamilyCard.scss';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import {
-  Table,
+  FamilyMember,
+  FamilyRecord,
+  FamilyStatuses,
+} from '../../global/types/Family';
+import './FamilyCard.scss';
+import { Table } from '../common/Table/Table';
+import {
   TableColumn,
   TableTheme,
   RenderFuncArgs,
   CellRenderProps,
-} from '../common/Table/Table';
+} from '../common/Table/types';
 import Cross from '../icons/Cross';
 import Tick from '../icons/Tick';
+import familiesActions from '../../store/families/actions';
+import {
+  ChangeFamilyStatusAction,
+  ChangeFamilyStatusPayload,
+  FamilyActions,
+} from '../../store/families/types';
 
 interface NormalizedFamilyMember extends FamilyMember {
   memberType: string;
 }
 
-interface Props {
-  cardInfo: FamilyRecord;
-}
-
-interface State {
+type State = {
   cardColumns: TableColumn[];
   formattedCardData: NormalizedFamilyMember[];
-  cardColor: TableTheme;
-}
+};
 
-export default class FamilyCard extends Component<Props, State> {
+type OwnProps = {
+  cardInfo: FamilyRecord;
+};
+
+type DispatchProps = {
+  changeFamilyStatus: (
+    payload: ChangeFamilyStatusPayload,
+  ) => ChangeFamilyStatusAction;
+};
+
+type Props = OwnProps & DispatchProps;
+
+class FamilyCard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -66,7 +83,6 @@ export default class FamilyCard extends Component<Props, State> {
         },
       ],
       formattedCardData: this.formatCardInfo(this.props.cardInfo),
-      cardColor: this.defineCardColor(),
     };
   }
 
@@ -143,7 +159,13 @@ export default class FamilyCard extends Component<Props, State> {
   };
 
   onChangeStatus = (): void => {
-    console.log('Change status');
+    this.props.changeFamilyStatus({
+      id: this.props.cardInfo.id,
+      status:
+        this.props.cardInfo.status === FamilyStatuses.DECLINED
+          ? FamilyStatuses.APPROVED
+          : FamilyStatuses.DECLINED,
+    });
   };
 
   render(): JSX.Element {
@@ -152,9 +174,18 @@ export default class FamilyCard extends Component<Props, State> {
         <Table
           columns={this.state.cardColumns}
           data={this.state.formattedCardData}
-          theme={this.state.cardColor}
+          theme={this.defineCardColor()}
         />
       </div>
     );
   }
 }
+const mapDispatchToProps = (dispatch: Dispatch<FamilyActions>) =>
+  bindActionCreators(
+    {
+      changeFamilyStatus: familiesActions.changeFamilyStatus,
+    },
+    dispatch,
+  );
+
+export default connect(null, mapDispatchToProps)(FamilyCard);

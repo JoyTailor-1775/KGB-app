@@ -3,10 +3,10 @@ import {
   FamiliesStats,
   FamilyStatuses,
 } from '../../global/types/Family';
-import { RootState, FamiliesStatsStatuses, FamiliesTypes } from './types';
+import { FamilyState, FamiliesStatsStatuses, FamiliesTypes } from './types';
 
 // Returns formatted statistics data of the families field in the app store.
-const getFamiliesStatistics = (state: RootState): FamiliesStats[] => {
+const getFamiliesStatistics = (state: FamilyState): FamiliesStats[] => {
   const familiesReport: Record<FamiliesStatsStatuses, FamiliesTypes> = {
     [FamilyStatuses.APPROVED]: {
       primary: 0,
@@ -32,15 +32,15 @@ const getFamiliesStatistics = (state: RootState): FamiliesStats[] => {
     status: FamiliesStatsStatuses,
     family: Family,
   ): void => {
-    if (family.spouse && family.children) {
+    if (family.children) {
       updateStatValue(status, 'primarySpouseChildren');
-      return;
     }
-    if (family.spouse) {
+    if (family.spouse && !family.children) {
       updateStatValue(status, 'primarySpouse');
-      return;
     }
-    updateStatValue(status, 'primary');
+    if (!family.children && !family.spouse) {
+      updateStatValue(status, 'primary');
+    }
   };
 
   const approvedFamilies = state.families.filter(
@@ -70,4 +70,4 @@ const getFamiliesStatistics = (state: RootState): FamiliesStats[] => {
   return familiesStatistics;
 };
 
-export { getFamiliesStatistics };
+export default { getFamiliesStatistics };

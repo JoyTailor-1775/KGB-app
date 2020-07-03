@@ -1,49 +1,35 @@
-1. Explain why and how a cors extension for the browser should be used;
-2. Explain why there is lot's of additional unnessessary things in the Table component;
-3. If you have time - breake the Table component into three separate;
-4. Update comments in the common Table component
+# KGB-app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This app is created for you, my dear comrade, to easily and fast detect and reveal communism
+enemies.
 
-## Available Scripts
+To run the app you need to fork or clone this repositore and run `yarn | npm install` and
+`yarn start | npm start` in the root folder of the project.
 
-In the project directory, you can run:
+## Attention!
 
-### `yarn start`
+Please, take into consideration the next several notions regarding the project:
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. There is some troubles with client-server connection, due to external server specifities, thus in
+   order to use the project successfully, before you start one, you need to add cors extension for
+   your browser and enable it.
+   Here you may find an extension for GoogleChrome - https://mybrowseraddon.com/access-control-allow-origin.html .
+   You are free to use any analogue, for this or other browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+2. Some parts of the common Table component functional are beyond the scope of this test assignment. That my
+   own common component, which I've been using in some test assignments before, and which I successfully adapted
+   for TypeScript and used here.
 
-### `yarn test`
+3. There were no any specific requirements to the client-server data flow into this assignment, however, the data
+   incoming from server should be stored, while switching the pages. Thus, I've decided to create next flow:
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- After an api request, the client checked, if the incoming data has been saved in the LocalStorage previously,
+  and if - so it uses the previously stored one (since there is always the same data from the server, I decided to
+  keep that in this way);
+  
+- After the cards page is unmounted (and all the work with families cards is over) - the data is saved to the 
+   LocalStorage for subsequent usage. The idea of storing business data   (except for something like auth token) 
+   in LocalStorage is bad and unwelcome. However, as a temporary decision in the scope of the test assignment, 
+   I've decided to keep it in this way.
 
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Happy hunting for the enemies of the people, glory to soviets!

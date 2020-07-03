@@ -11,7 +11,7 @@ export type ErrorState = Error | null;
 export type LoadingState = boolean;
 export type FamiliesState = FamilyRecord[];
 
-export interface RootState {
+export interface FamilyState {
   error: ErrorState;
   loading: LoadingState;
   families: FamiliesState;
