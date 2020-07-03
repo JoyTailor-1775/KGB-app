@@ -1,27 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Table, TableColumn } from '../common/Table/Table';
-import { FamilyStatuses, FamiliesStats } from '../../global/types/Family';
+import { FamiliesStats } from '../../global/types/Family';
 import './StatsTable.scss';
-
-const testData: FamiliesStats[] = [
-  {
-    status: FamilyStatuses.APPROVED,
-    primary: 4,
-    primarySpouse: 2,
-    primarySpouseChildren: 3,
-  },
-  {
-    status: FamilyStatuses.DECLINED,
-    primary: 3,
-    primarySpouse: 5,
-    primarySpouseChildren: 4,
-  },
-];
+import { RootState } from '../../store/types';
+import familySelectors from '../../store/families/selectors';
 
 const tableColumns: TableColumn[] = [
   { heading: 'Status', dataKey: 'status', width: '90px' },
   { heading: 'Primary', dataKey: 'primary', width: '90px' },
-  { heading: 'Primary + Spouse', dataKey: 'primary', width: '100px' },
+  { heading: 'Primary + Spouse', dataKey: 'primarySpouse', width: '100px' },
   {
     heading: 'Primary + Spouse + Children',
     dataKey: 'primarySpouseChildren',
@@ -29,12 +17,20 @@ const tableColumns: TableColumn[] = [
   },
 ];
 
-const StatsTable = (): JSX.Element => {
+type Props = {
+  familiesStats: FamiliesStats[];
+};
+
+const StatsTable = (props: Props): JSX.Element => {
   return (
     <div className="stats-table__container">
-      <Table columns={tableColumns} data={testData} theme="grey" />
+      <Table columns={tableColumns} data={props.familiesStats} theme="grey" />
     </div>
   );
 };
 
-export default StatsTable;
+const mapStateToProps = (state: RootState) => ({
+  familiesStats: familySelectors.getFamiliesStatistics(state.families),
+});
+
+export default connect(mapStateToProps)(StatsTable);

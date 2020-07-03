@@ -182,7 +182,7 @@ export class Table extends Component<TableProps, TableState> {
       theme = 'grey',
     } = this.props;
     return (
-      <table className={`table ${theme} ${pagination ? '' : 'bottom-rounded'}`}>
+      <table className={`table ${theme}`}>
         <thead className="table__head">
           <tr className="table__row">
             {columns.map((col, idx) => {
@@ -252,7 +252,9 @@ export class Table extends Component<TableProps, TableState> {
                       >
                         {cellRenderObj && cellRenderObj.children
                           ? cellRenderObj.children
-                          : obj[col.dataKey] || ''}
+                          : obj[col.dataKey] !== undefined
+                          ? obj[col.dataKey]
+                          : ''}
                       </td>
                     );
                   })}

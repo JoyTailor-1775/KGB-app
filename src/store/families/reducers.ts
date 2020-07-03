@@ -62,12 +62,12 @@ const handleFamilyStatusChange = (
   state: FamiliesState,
   action: ChangeFamilyStatusAction,
 ): FamiliesState => {
-  const objectToUpdate = state.find((el) => el.id === action.payload.id);
-  if (objectToUpdate) {
-    objectToUpdate.status = action.payload.status;
-    return [...state, objectToUpdate];
-  }
-  return [...state];
+  return state.map((family) => {
+    if (family.id === action.payload.id) {
+      return { ...family, status: action.payload.status };
+    }
+    return family;
+  });
 };
 
 const familiesReducer: Reducer<FamiliesState, FamilyActions> = (
