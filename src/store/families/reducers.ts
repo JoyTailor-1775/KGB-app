@@ -10,18 +10,17 @@ import {
   UploadFamiliesAction,
   ChangeFamilyStatusAction,
 } from './types';
+import {
+  FamilyRecord,
+  FamilyWithStatuses,
+  FamilyMemberWithStatus,
+} from '../../global/types/Family';
 
-const handleError = (
-  state: ErrorState,
-  action: FetchErrorAction,
-): ErrorState => {
+const handleError = (state: ErrorState, action: FetchErrorAction): ErrorState => {
   return action.payload;
 };
 
-const errorReducer: Reducer<ErrorState, FamilyActions> = (
-  state = null,
-  action,
-) => {
+const errorReducer: Reducer<ErrorState, FamilyActions> = (state = null, action) => {
   switch (action.type) {
     case FamilyActionTypes.FETCH_ERROR:
       return handleError(state, action as FetchErrorAction);
@@ -34,10 +33,7 @@ const errorReducer: Reducer<ErrorState, FamilyActions> = (
   }
 };
 
-const loadingReducer: Reducer<LoadingState, FamilyActions> = (
-  state = false,
-  action,
-) => {
+const loadingReducer: Reducer<LoadingState, FamilyActions> = (state = false, action) => {
   switch (action.type) {
     case FamilyActionTypes.FETCH_REQUEST:
       return true;
@@ -62,27 +58,41 @@ const handleFamilyStatusChange = (
   state: FamiliesState,
   action: ChangeFamilyStatusAction,
 ): FamiliesState => {
+  const { id, status, familyMember, memberSsn } = action.payload;
   return state.map((family) => {
-    if (family.id === action.payload.id) {
-      return { ...family, status: action.payload.status };
+    if (family.id === id) {
+      let newFamily: Partial<FamilyWithStatuses> = {};
+      // Updating statuses inside every element of the children array,
+      // or inside simple familyMember object.
+      if (familyMember === 'child' && family.data.children) {
+        const indexOfChild = family.data.children.findIndex((child) => child.ssn === memberSsn);
+        const newChildren = family.data.children.slice();
+        newChildren[indexOfChild] = {
+          ...family.data.children[indexOfChild],
+          status: status,
+        };
+        newFamily = { ...family.data, children: newChildren };
+      } else {
+        const newFamilyMember = { ...family.data[familyMember], status: status };
+        newFamily = {
+          ...family.data,
+          [familyMember]: newFamilyMember as FamilyMemberWithStatus,
+        };
+      }
+
+      return { ...family, data: { ...(newFamily as FamilyWithStatuses) } };
     }
     return family;
   });
 };
 
-const familiesReducer: Reducer<FamiliesState, FamilyActions> = (
-  state = [],
-  action,
-) => {
+const familiesReducer: Reducer<FamiliesState, FamilyActions> = (state = [], action) => {
   switch (action.type) {
     case FamilyActionTypes.UPLOAD_FAMILIES:
       return handleFamiliesUpload(state, action as UploadFamiliesAction);
 
     case FamilyActionTypes.CHANGE_FAMILY_STATUS:
-      return handleFamilyStatusChange(
-        state,
-        action as ChangeFamilyStatusAction,
-      );
+      return handleFamilyStatusChange(state, action as ChangeFamilyStatusAction);
 
     default:
       return state;

@@ -1,13 +1,15 @@
 import {
-  Family,
   FamiliesStats,
   FamilyStatuses,
+  FamilyWithStatuses,
+  FamiliesStatsWithStatus,
+  FamilyTypes,
 } from '../../global/types/Family';
-import { FamilyState, FamiliesStatsStatuses, FamiliesTypes } from './types';
+import { FamilyState, FamiliesStatsStatuses } from './types';
 
 // Returns formatted statistics data of the families field in the app store.
-const getFamiliesStatistics = (state: FamilyState): FamiliesStats[] => {
-  const familiesReport: Record<FamiliesStatsStatuses, FamiliesTypes> = {
+const getFamiliesStatistics = (state: FamilyState): FamiliesStatsWithStatus[] => {
+  const familiesReport: Record<FamiliesStatsStatuses, FamiliesStats> = {
     [FamilyStatuses.APPROVED]: {
       primary: 0,
       primarySpouse: 0,
@@ -20,44 +22,40 @@ const getFamiliesStatistics = (state: FamilyState): FamiliesStats[] => {
     },
   };
 
-  const updateStatValue = (
-    familyStatus: FamiliesStatsStatuses,
-    familyType: string,
-  ): void => {
-    familiesReport[familyStatus][familyType] =
-      familiesReport[familyStatus][familyType] + 1;
+  const updateStatValue = (familyStatus: FamiliesStatsStatuses, familyType: FamilyTypes): void => {
+    familiesReport[familyStatus][familyType] = familiesReport[familyStatus][familyType] + 1;
   };
 
-  const updateAccordingFamilyStatsValue = (
+  const getFamilyTypeAndUpdateWithStatus = (
+    family: FamilyWithStatuses,
     status: FamiliesStatsStatuses,
-    family: Family,
   ): void => {
     if (family.children) {
-      updateStatValue(status, 'primarySpouseChildren');
+      const childrenStatuses = family.children.map((child) => child.status);
+      if (childrenStatuses.every((childStatus) => childStatus === status)) {
+        updateStatValue(status, 'primarySpouseChildren');
+        return;
+      }
     }
-    if (family.spouse && !family.children) {
+    if (family.spouse && family.spouse.status === status) {
       updateStatValue(status, 'primarySpouse');
+      return;
     }
-    if (!family.children && !family.spouse) {
-      updateStatValue(status, 'primary');
+    updateStatValue(status, 'primary');
+  };
+
+  const updateAccordingFamilyStatsValue = (family: FamilyWithStatuses): void => {
+    if (family.primary.status === FamilyStatuses.APPROVED) {
+      getFamilyTypeAndUpdateWithStatus(family, FamilyStatuses.APPROVED);
+    }
+    if (family.primary.status === FamilyStatuses.DECLINED) {
+      getFamilyTypeAndUpdateWithStatus(family, FamilyStatuses.DECLINED);
     }
   };
 
-  const approvedFamilies = state.families.filter(
-    (family) => family.status === FamilyStatuses.APPROVED,
-  );
-  approvedFamilies.forEach((family) =>
-    updateAccordingFamilyStatsValue(FamilyStatuses.APPROVED, family.data),
-  );
+  state.families.forEach((family) => updateAccordingFamilyStatsValue(family.data));
 
-  const declinedFamilies = state.families.filter(
-    (family) => family.status === FamilyStatuses.DECLINED,
-  );
-  declinedFamilies.forEach((family) =>
-    updateAccordingFamilyStatsValue(FamilyStatuses.DECLINED, family.data),
-  );
-
-  const familiesStatistics: FamiliesStats[] = [];
+  const familiesStatistics: FamiliesStatsWithStatus[] = [];
 
   familiesStatistics.push(
     {

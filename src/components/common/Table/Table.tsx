@@ -99,8 +99,7 @@ export class Table extends Component<TableProps, TableState> {
   }
 
   toggleSortOrder = (key: string): void => {
-    const newColumnOrder =
-      this.state.sortingManager[key] === 'asc' ? 'desc' : 'asc';
+    const newColumnOrder = this.state.sortingManager[key] === 'asc' ? 'desc' : 'asc';
     this.setState({
       sortingManager: {
         ...this.state.sortingManager,
@@ -118,10 +117,7 @@ export class Table extends Component<TableProps, TableState> {
       });
   };
 
-  onRowClickOwn = (
-    e: MouseEvent<HTMLTableRowElement>,
-    id: string | number,
-  ): void => {
+  onRowClickOwn = (e: MouseEvent<HTMLTableRowElement>, id: string | number): void => {
     if (e.currentTarget.nodeName === 'BUTTON') return;
     this.props.onRowClick && this.props.onRowClick(id);
   };
@@ -167,11 +163,7 @@ export class Table extends Component<TableProps, TableState> {
           onDelete={onDelete}
         />
         {pagination && (
-          <TableFooter
-            onPageChangeOwn={this.onPageChangeOwn}
-            page={page}
-            totalPages={totalPages}
-          />
+          <TableFooter onPageChangeOwn={this.onPageChangeOwn} page={page} totalPages={totalPages} />
         )}
       </table>
     );

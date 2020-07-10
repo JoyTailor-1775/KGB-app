@@ -7,10 +7,7 @@ export interface Props {
   data: TableDataStructure[];
   columns: TableColumn[];
   rowKey?: string | number;
-  onRowClickOwn: (
-    e: MouseEvent<HTMLTableRowElement>,
-    id: string | number,
-  ) => void;
+  onRowClickOwn: (e: MouseEvent<HTMLTableRowElement>, id: string | number) => void;
   loading?: boolean;
   deletable?: boolean;
   onDelete?: (rowKey: string | number) => void;
@@ -63,7 +60,15 @@ const TableBody = ({
                     key={index}
                     style={{ width: col.width || '50px' }}
                     {...{ ...cellRenderObj?.props }}
-                    {...(col.onCellClick ? { onClick: col.onCellClick } : {})}
+                    {...{
+                      onClick: () =>
+                        col.onCellClick &&
+                        col.onCellClick({
+                          dataKey: col.dataKey,
+                          value: obj[col.dataKey],
+                          index: data.indexOf(obj),
+                        }),
+                    }}
                   >
                     {cellRenderObj && cellRenderObj.children
                       ? cellRenderObj.children

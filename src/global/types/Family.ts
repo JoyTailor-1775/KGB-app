@@ -6,12 +6,20 @@ export interface FamilyMember {
   [key: string]: string | number;
 }
 
-export type Family = {
-  primary: FamilyMember;
-  spouse?: FamilyMember;
-  children?: FamilyMember[];
-  [key: string]: FamilyMember | FamilyMember[] | undefined;
+type FamilyConstructor<FamilyMemberType> = {
+  primary: FamilyMemberType;
+  spouse?: FamilyMemberType;
+  children?: FamilyMemberType[];
+  [key: string]: FamilyMemberType | FamilyMemberType[] | undefined;
 };
+
+export type Family = FamilyConstructor<FamilyMember>;
+
+export type FamilyMemberWithStatus = FamilyMember & {
+  status: FamilyStatuses;
+};
+
+export type FamilyWithStatuses = FamilyConstructor<FamilyMemberWithStatus>;
 
 export enum FamilyStatuses {
   APPROVED = 'Approved',
@@ -21,14 +29,18 @@ export enum FamilyStatuses {
 
 export type FamilyRecord = {
   id: number | string;
-  status: FamilyStatuses;
-  data: Family;
+  data: FamilyWithStatuses;
 };
 
-export interface FamiliesStats {
-  status: FamilyStatuses;
+export type FamiliesStats = {
   primary: number;
   primarySpouse: number;
   primarySpouseChildren: number;
+};
+
+export type FamiliesStatsWithStatus = FamiliesStats & {
+  status: FamilyStatuses;
   [key: string]: number | FamilyStatuses;
-}
+};
+
+export type FamilyTypes = 'primary' | 'primarySpouse' | 'primarySpouseChildren';
