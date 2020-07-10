@@ -24,6 +24,12 @@ export interface RenderFuncArgs {
   dataLength: number;
 }
 
+export interface OnCellClickArgs {
+  dataKey: string;
+  value: string | number | boolean | null;
+  index: number;
+}
+
 export interface TableColumn {
   heading: string;
   dataKey: string;
@@ -31,7 +37,7 @@ export interface TableColumn {
   sortable?: boolean;
   sortFunc?: (args: ColumnSortingFunctionParams) => TableDataStructure;
   render?: (args: RenderFuncArgs) => CellRenderProps;
-  onCellClick?: () => void;
+  onCellClick?: (args: OnCellClickArgs) => void;
 }
 
 export type TableTheme = 'grey' | 'red' | 'green';

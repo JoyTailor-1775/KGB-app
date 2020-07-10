@@ -24,11 +24,9 @@ const createPayloadAction = <Type extends string, Payload>(
   payload,
 });
 
-const fetchSuccess = (): FetchSuccessAction =>
-  createAction(FamilyActionTypes.FETCH_SUCCESS);
+const fetchSuccess = (): FetchSuccessAction => createAction(FamilyActionTypes.FETCH_SUCCESS);
 
-const fetchRequest = (): FetchRequestAction =>
-  createAction(FamilyActionTypes.FETCH_REQUEST);
+const fetchRequest = (): FetchRequestAction => createAction(FamilyActionTypes.FETCH_REQUEST);
 
 const fetchError = (error: ErrorState): FetchErrorAction =>
   createPayloadAction(FamilyActionTypes.FETCH_ERROR, error);
@@ -36,10 +34,8 @@ const fetchError = (error: ErrorState): FetchErrorAction =>
 const uploadFamilies = (families: FamiliesState): UploadFamiliesAction =>
   createPayloadAction(FamilyActionTypes.UPLOAD_FAMILIES, families);
 
-const changeFamilyStatus = (
-  status: ChangeFamilyStatusPayload,
-): ChangeFamilyStatusAction =>
-  createPayloadAction(FamilyActionTypes.CHANGE_FAMILY_STATUS, status);
+const changeFamilyStatus = (data: ChangeFamilyStatusPayload): ChangeFamilyStatusAction =>
+  createPayloadAction(FamilyActionTypes.CHANGE_FAMILY_STATUS, data);
 
 export default {
   fetchRequest,

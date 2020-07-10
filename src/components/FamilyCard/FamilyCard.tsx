@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import {
-  FamilyMember,
-  FamilyRecord,
-  FamilyStatuses,
-} from '../../global/types/Family';
+import { FamilyRecord, FamilyStatuses, FamilyMemberWithStatus } from '../../global/types/Family';
 import './FamilyCard.scss';
 import { Table } from '../common/Table/Table';
 import {
   TableColumn,
-  TableTheme,
   RenderFuncArgs,
   CellRenderProps,
+  OnCellClickArgs,
 } from '../common/Table/types';
 import Cross from '../icons/Cross';
 import Tick from '../icons/Tick';
@@ -23,7 +19,7 @@ import {
   FamilyActions,
 } from '../../store/families/types';
 
-interface NormalizedFamilyMember extends FamilyMember {
+interface NormalizedFamilyMember extends FamilyMemberWithStatus {
   memberType: string;
 }
 
@@ -37,9 +33,7 @@ type OwnProps = {
 };
 
 type DispatchProps = {
-  changeFamilyStatus: (
-    payload: ChangeFamilyStatusPayload,
-  ) => ChangeFamilyStatusAction;
+  changeFamilyStatus: (payload: ChangeFamilyStatusPayload) => ChangeFamilyStatusAction;
 };
 
 type Props = OwnProps & DispatchProps;
@@ -87,7 +81,7 @@ class FamilyCard extends Component<Props, State> {
   }
 
   normalizeRegularFamilyMember = (
-    familyMember: FamilyMember,
+    familyMember: FamilyMemberWithStatus,
     familyMemberName: string,
   ): NormalizedFamilyMember => {
     return { memberType: familyMemberName, ...familyMember };
@@ -99,16 +93,13 @@ class FamilyCard extends Component<Props, State> {
     for (const familyMember in info.data) {
       if (!Array.isArray(info.data[familyMember])) {
         const normalizedFamilyMember = this.normalizeRegularFamilyMember(
-          info.data[familyMember] as FamilyMember,
+          info.data[familyMember] as FamilyMemberWithStatus,
           familyMember,
         );
         normalizedData.push(normalizedFamilyMember);
       } else {
-        (info.data[familyMember] as FamilyMember[]).forEach((familyMember) => {
-          const normalizedFamilyMember = this.normalizeRegularFamilyMember(
-            familyMember,
-            'child',
-          );
+        (info.data[familyMember] as FamilyMemberWithStatus[]).forEach((familyMember) => {
+          const normalizedFamilyMember = this.normalizeRegularFamilyMember(familyMember, 'child');
           normalizedData.push(normalizedFamilyMember);
         });
       }
@@ -116,66 +107,45 @@ class FamilyCard extends Component<Props, State> {
     return normalizedData;
   };
 
-  renderStatusCell = ({
-    index,
-    dataLength,
-  }: RenderFuncArgs): CellRenderProps => {
+  renderStatusCell = ({ index }: RenderFuncArgs): CellRenderProps => {
     const cellRenderProps: CellRenderProps = {};
-
-    if (index === 0) {
-      if (this.props.cardInfo.status !== FamilyStatuses.UNREVIEWED) {
-        cellRenderProps.children =
-          this.props.cardInfo.status === FamilyStatuses.APPROVED ? (
-            <Tick width="60px" color="#2fbd3e" />
-          ) : (
-            <Cross width="60px" color="#a30000" />
-          );
-      }
-      cellRenderProps.props = {
-        rowSpan: dataLength,
-      };
-    } else {
-      cellRenderProps.props = {
-        rowSpan: 0,
-      };
+    const familyMemberStatus = this.state.formattedCardData[index].status;
+    if (familyMemberStatus && familyMemberStatus !== FamilyStatuses.UNREVIEWED) {
+      cellRenderProps.children =
+        familyMemberStatus === FamilyStatuses.APPROVED ? (
+          <Tick width="60px" color="#2fbd3e" />
+        ) : (
+          <Cross width="60px" color="#a30000" />
+        );
     }
     return cellRenderProps;
   };
 
-  defineCardColor = (): TableTheme => {
-    let color;
-    switch (this.props.cardInfo.status) {
-      case FamilyStatuses.UNREVIEWED:
-        color = 'grey';
-        break;
-      case FamilyStatuses.APPROVED:
-        color = 'green';
-        break;
-      case FamilyStatuses.DECLINED:
-        color = 'red';
-        break;
-    }
-    return color as TableTheme;
-  };
-
-  onChangeStatus = (): void => {
+  onChangeStatus = ({ index }: OnCellClickArgs): void => {
+    const familyMemberOnChange = this.state.formattedCardData[index];
     this.props.changeFamilyStatus({
       id: this.props.cardInfo.id,
+      familyMember: familyMemberOnChange.memberType,
+      memberSsn: familyMemberOnChange.ssn,
       status:
-        this.props.cardInfo.status === FamilyStatuses.DECLINED
+        familyMemberOnChange.status === FamilyStatuses.DECLINED
           ? FamilyStatuses.APPROVED
           : FamilyStatuses.DECLINED,
     });
   };
 
+  componentDidUpdate(nextProps: Props) {
+    if (nextProps.cardInfo.data !== this.props.cardInfo.data) {
+      this.setState({
+        formattedCardData: this.formatCardInfo(this.props.cardInfo),
+      });
+    }
+  }
+
   render(): JSX.Element {
     return (
       <div className="family-card__container">
-        <Table
-          columns={this.state.cardColumns}
-          data={this.state.formattedCardData}
-          theme={this.defineCardColor()}
-        />
+        <Table columns={this.state.cardColumns} data={this.state.formattedCardData} />
       </div>
     );
   }

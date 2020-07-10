@@ -27,19 +27,15 @@ export enum FamilyActionTypes {
 
 export type ChangeFamilyStatusPayload = {
   id: string | number;
+  familyMember: string;
+  memberSsn: string;
   status: FamilyStatuses;
 };
 
 export type FetchSuccessAction = Action<FamilyActionTypes.FETCH_SUCCESS>;
 export type FetchRequestAction = Action<FamilyActionTypes.FETCH_REQUEST>;
-export type FetchErrorAction = PayloadAction<
-  FamilyActionTypes.FETCH_ERROR,
-  ErrorState
->;
-export type UploadFamiliesAction = PayloadAction<
-  FamilyActionTypes.UPLOAD_FAMILIES,
-  FamiliesState
->;
+export type FetchErrorAction = PayloadAction<FamilyActionTypes.FETCH_ERROR, ErrorState>;
+export type UploadFamiliesAction = PayloadAction<FamilyActionTypes.UPLOAD_FAMILIES, FamiliesState>;
 
 export type ChangeFamilyStatusAction = PayloadAction<
   FamilyActionTypes.CHANGE_FAMILY_STATUS,
@@ -53,13 +49,4 @@ export type FamilyActions =
   | UploadFamiliesAction
   | ChangeFamilyStatusAction;
 
-export type FamiliesTypes = {
-  primary: number;
-  primarySpouse: number;
-  primarySpouseChildren: number;
-  [key: string]: number;
-};
-
-export type FamiliesStatsStatuses =
-  | FamilyStatuses.APPROVED
-  | FamilyStatuses.DECLINED;
+export type FamiliesStatsStatuses = FamilyStatuses.APPROVED | FamilyStatuses.DECLINED;
